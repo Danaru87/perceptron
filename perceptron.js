@@ -1,22 +1,25 @@
-function Perceptron(treshold) {
-
-    function IsOverTreshold(input) {
-        return input >= treshold;
+function Perceptron(threshold) {
+    function isActive(input) {
+        return input >= threshold;
     }
 
-    function Process(input, weight) {
-        if (IsOverTreshold(input))
-        {
-            if(IsOverTreshold(input * weight))
-            {
-                return 1;
-            }
+    function processOutput(input, weight) {
+        return isActive(input) ? input * weight : 0;
+    }
+
+    function process(inputs, weights) {
+        var result = 0;
+        for(var i = 0; i < inputs.length; i++) {
+            var input =  inputs[i];
+            var weight =  weights[i];
+            result += processOutput(input, weight);
         }
-        return 0;
+        return result;
     }
 
     return {
-        Process:Process
+        isActive: isActive,
+        process: process
     };
 }
 

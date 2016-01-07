@@ -1,32 +1,56 @@
 var Perceptron = require("./perceptron.js")
 describe("Perceptron", function() {
-
     var perceptron;
+    var THRESHOLD = 0.4;
+    var ACTIVE = 1;
+    var INACTIVE = 0;
 
-    beforeEach(function(){
-        perceptron = new Perceptron(0.4);
+    describe("with one input and one output", function() {
+
+        beforeEach(function () {
+            perceptron = new Perceptron(THRESHOLD);
+        });
+
+        function expectOutput(input, weight, output) {
+            var result = perceptron.process([input], [weight]);
+            expect(result).toEqual(output);
+        }
+
+        it("should output 0 if inactive input", function() {
+            expectOutput(INACTIVE,0,0);
+        });
+
+        it("should output input*weight if input is over threshold", function() {
+            var input = THRESHOLD + 0.1;
+            var weight = 0.6;
+            expectOutput(input,weight,input*weight);
+        });
+
+        it("should output 0 if input is below threshold", function() {
+            var input = THRESHOLD - 0.1;
+            expectOutput(input,1,0);
+        });
     });
 
-    function ExpectOutput(input, weight, output)
-    {
-        var result = perceptron.Process(input, weight);
-        expect(result).toEqual(output);
-    }
+    describe("set up for AND", function() {
+        var AND_WEIGHTS = [THRESHOLD/2, THRESHOLD/2];
 
-    it("should output 0 if input 0", function()
-    {
-        ExpectOutput(0,0,0);
-    })
+        function expectActiveOutput(expected, inputs) {
+            var result = perceptron.process(inputs, AND_WEIGHTS);
+            var outputActive = perceptron.isActive(result);
+            expect(outputActive).toBe(expected);
+        }
 
-    it("should output 1 if input 1 and weight is 1", function()
-    {
-        ExpectOutput(1,1,1);
-    })
+        beforeEach(function() {
+            perceptron = new Perceptron(THRESHOLD);
+        });
 
-    it("should output 1 if input 0.6 and weight is 0.6", function()
-    {
-        ExpectOutput(0.6,0.6, 0);
-    })
-
+        it("should act like a AND)", function() {
+            expectActiveOutput(false,   [INACTIVE,  INACTIVE]);
+            expectActiveOutput(false,   [INACTIVE,  ACTIVE]);
+            expectActiveOutput(false,   [ACTIVE,    INACTIVE]);
+            expectActiveOutput(true,    [ACTIVE,    ACTIVE]);
+        });
+    });
 
 });
