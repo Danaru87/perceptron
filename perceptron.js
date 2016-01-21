@@ -1,4 +1,4 @@
-function Perceptron(threshold) {
+function Perceptron(threshold, outputCount) {
     function isActive(input) {
         return input >= threshold;
     }
@@ -8,11 +8,16 @@ function Perceptron(threshold) {
     }
 
     function process(inputs, weights) {
-        var result = 0;
-        for(var i = 0; i < inputs.length; i++) {
-            var input =  inputs[i];
-            var weight =  weights[i];
-            result += processOutput(input, weight);
+        var result = [];
+        for(var i = 0; i < outputCount; i++) result[i] = 0;
+
+        for (var j = 0; j < outputCount; j++)
+        {
+            for(var i = 0; i < inputs.length; i++) {
+                var input =  inputs[i];
+                var weight =  weights[i][j];
+                result[j] += processOutput(input, weight);
+            }
         }
         return result;
     }
